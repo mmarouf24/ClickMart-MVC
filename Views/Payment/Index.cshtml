@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Order>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Orders</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Order Date
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                TotalPrice
+            </th>
+            <th>
+                User 
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @item.OrderDate
+            </td>
+            <td>
+                @item.Status
+            </td>
+            <td>
+                @item.TotalPrice
+            </td>
+            <td>
+                @item.User.FirstName
+            </td>
+            <td>
+               
+                <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

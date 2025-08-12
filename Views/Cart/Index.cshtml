@@ -1,0 +1,54 @@
+﻿@model Cart
+
+@{
+    ViewData["Title"] = "My Cart";
+}
+
+<h2>My Cart</h2>
+@if (Model.CartItems == null || !Model.CartItems.Any())
+{
+    <p>Your cart is empty.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CartItems)
+            {
+                <tr>
+                   <td>
+                       @item.Product.Name
+                   </td>
+                    <td>@item.Quantity</td>
+                    <td>@item.UnitPrice.ToString("C")</td>
+                    <td>@((item.UnitPrice* item.Quantity).ToString("C"))</td>
+                    <td>
+                        <form asp-action="Remove" method="post" style="display:inline;">
+                            <input type="hidden" name="CartItemId" value="@item.CartItemId" />
+                            <input type="hidden" name="UserId" value="@Model.UserId" />
+                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                <td colspan="2">
+                    @Model.CartItems.Sum(i => i.UnitPrice * i.Quantity).ToString("C")
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+    <a class="btn btn-success" asp-action="Add" asp-controller="Payment" asp-route-id="@Model.CartId">Checkout</a>
+}
