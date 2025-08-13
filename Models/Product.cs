@@ -14,7 +14,7 @@ namespace ECommerce.Models
         [Column(TypeName = "decimal(18,2)"),Required]
         
         public decimal Price { get; set; }
-        [Required,MinLength(1)]
+        [Required,Range(1,int.MaxValue)]
         public int StockQty { get; set; }
         [ForeignKey("Category"),Display(Name="Category")]
         public int CategoryId { get; set; }

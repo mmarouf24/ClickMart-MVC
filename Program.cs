@@ -1,3 +1,5 @@
+using ECommerce.Repositories;
+
 namespace ECommerce
 {
     public class Program
@@ -8,6 +10,8 @@ namespace ECommerce
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<IUserRepo,UserRepo>();
+            builder.Services.AddScoped<IProductRepo,ProductRepo>();
 
             var app = builder.Build();
 

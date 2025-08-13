@@ -1,4 +1,5 @@
 ﻿using ECommerce.Models;
+using ECommerce.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.Controllers
@@ -6,10 +7,14 @@ namespace ECommerce.Controllers
 
     public class UsersController : Controller
     {
-        ECommerceDbContext _context=new ECommerceDbContext();
-        public IActionResult Index()
+        IUserRepo userRepo;
+        public UsersController(IUserRepo _userRepo)
         {
-            var users=_context.Users.ToList();
+            userRepo = _userRepo;
+        }
+        public async Task<IActionResult> Index()
+        {
+            var users=await userRepo.GetAllAsync();
             return View(users);
         }
 
@@ -18,11 +23,10 @@ namespace ECommerce.Controllers
         }
         [HttpPost]
 
-        public IActionResult Register(User user)
+        public async Task<IActionResult> Register(User user)
         {
             if (ModelState.IsValid) {
-                _context.Users.Add(user);
-                _context.SaveChanges();
+                await userRepo.Register(user);
                 return RedirectToAction("Index");
             }
             else
@@ -32,9 +36,10 @@ namespace ECommerce.Controllers
             
         }
 
-        public IActionResult CheckEmailExistance(string Email) { 
-        
-            var user=_context.Users.FirstOrDefault(u=>u.Email == Email);
+        public async Task<IActionResult> CheckEmailExistance(string Email) {
+
+            var users = await userRepo.GetAllAsync();
+            var user=users.FirstOrDefault(u=>u.Email == Email);
             if (user != null)
                 return Json(false);
             return Json(true);
