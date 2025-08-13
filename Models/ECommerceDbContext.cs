@@ -4,6 +4,12 @@ namespace ECommerce.Models
 {
     public class ECommerceDbContext:DbContext
     {
+        public ECommerceDbContext()
+        {
+            
+        }
+        public ECommerceDbContext(DbContextOptions options):base(options) { }
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Data Source=.;database=ECommerceMVC;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=True;");

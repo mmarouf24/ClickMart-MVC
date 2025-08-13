@@ -11,8 +11,11 @@ namespace ECommerce.Repositories
     }
     public class UserRepo : IUserRepo
     {
-        ECommerceDbContext _context=new ECommerceDbContext();
-
+        ECommerceDbContext _context;
+        public UserRepo(ECommerceDbContext context)
+        {
+            _context = context;
+        }
         public async Task<List<User>> GetAllAsync()
         {
             return await _context.Users.ToListAsync();

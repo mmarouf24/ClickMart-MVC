@@ -13,7 +13,11 @@ namespace ECommerce.Repositories
     }
     public class ProductRepo : IProductRepo
     {
-        ECommerceDbContext _context=new ECommerceDbContext();
+        ECommerceDbContext _context;
+        public ProductRepo(ECommerceDbContext context)
+        {
+            _context = context;
+        }
         public async Task<Product> AddAsync(Product product)
         {
             await _context.Products.AddAsync(product);

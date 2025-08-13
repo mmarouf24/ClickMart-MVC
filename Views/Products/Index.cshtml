@@ -1,71 +1,152 @@
 ﻿@model IEnumerable<Product>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Our Store";
 }
 
-<h1>Store</h1>
+<div class="products-hero">
+    <div class="container">
+        <h1 class="hero-title">Discover Amazing Products</h1>
+        <p class="hero-subtitle">Find the perfect items for your lifestyle</p>
+        
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search products...">
+                <button class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Add">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                Description
-            </th>
-            <th>
-               Price
-            </th>
-            <th>
-                StockQty
-            </th>
-            <th>
-               CreatedAt
-            </th>
-            <th>
-                UpdatedAt
-            </th>
-            <th>
-                Category
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @item.Name
-            </td>
-            <td>
-                @item.Description
-            </td>
-            <td>
-                @item.Price
-            </td>
-            <td>
-                @item.StockQty
-            </td>
-            <td>
-                @item.CreatedAt
-            </td>
-            <td>
-                @item.UpdatedAt
-            </td>
-            <td>
-                @item.Category.Name
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
-            </td>
-        </tr>
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2 class="section-title">Featured Products</h2>
+        </div>
+        <div class="col-md-6 text-end">
+            <a asp-action="Add" class="btn btn-primary add-product-btn">
+                <i class="fas fa-plus"></i> Add New Product
+            </a>
+        </div>
+    </div>
+
+    <div class="row" id="productsContainer">
+        @foreach (var item in Model) {
+            <div class="col-lg-4 col-md-6 mb-4 product-card-wrapper">
+                <div class="product-card">
+                    <div class="product-image">
+                        <i class="fas fa-shopping-bag product-icon"></i>
+                        <div class="product-badge">
+                            @if (item.StockQty > 0)
+                            {
+                                <span class="badge in-stock">In Stock</span>
+                            }
+                            else
+                            {
+                                <span class="badge out-of-stock">Out of Stock</span>
+                            }
+                        </div>
+                        <div class="product-overlay">
+                            <div class="product-actions">
+                                <a asp-action="Details" asp-route-id="@item.ProductId" class="action-btn details-btn" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.ProductId" class="action-btn edit-btn" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.ProductId" class="action-btn delete-btn" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-content">
+                        <div class="product-category">
+                            <span class="category-tag">@item.Category?.Name</span>
+                        </div>
+                        
+                        <h3 class="product-title">@item.Name</h3>
+                        
+                        <p class="product-description">@item.Description</p>
+                        
+                        <div class="product-meta">
+                            <div class="price-section">
+                                <span class="price">$@item.Price.ToString("F2")</span>
+                                <span class="stock-info">@item.StockQty units available</span>
+                            </div>
+                            
+                            <div class="product-dates">
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar-alt"></i> Added: @item.CreatedAt.ToString("MMM dd, yyyy")
+                                </small>
+                            </div>
+                            
+                            <!-- Always visible action buttons -->
+                            <div class="product-actions-visible">
+                                <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-outline-warning btn-sm">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-outline-danger btn-sm">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <h3>No Products Found</h3>
+            <p>Start by adding your first product to the store.</p>
+            <a asp-action="Add" class="btn btn-primary">Add First Product</a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Search functionality
+            $('#searchInput').on('keyup', function() {
+                var searchTerm = $(this).val().toLowerCase();
+                $('.product-card-wrapper').each(function() {
+                    var productName = $(this).find('.product-title').text().toLowerCase();
+                    var productDesc = $(this).find('.product-description').text().toLowerCase();
+                    var productCategory = $(this).find('.category-tag').text().toLowerCase();
+                    
+                    if (productName.includes(searchTerm) || 
+                        productDesc.includes(searchTerm) || 
+                        productCategory.includes(searchTerm)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+
+            // Add hover effects
+            $('.product-card').hover(
+                function() {
+                    $(this).addClass('hovered');
+                },
+                function() {
+                    $(this).removeClass('hovered');
+                }
+            );
+        });
+    </script>
 }
-    </tbody>
-</table>

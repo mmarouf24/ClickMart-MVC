@@ -8,20 +8,21 @@ namespace ECommerce.Controllers
     public class ProductsController : Controller
     {
         IProductRepo productRepo;
-        ECommerceDbContext _context = new ECommerceDbContext();
+        ICategoryRepo categoryRepo;
 
-        public ProductsController(IProductRepo _productRepo)
+        public ProductsController(IProductRepo _productRepo,ICategoryRepo _categoryRepo)
         {
             productRepo = _productRepo;
+            categoryRepo = _categoryRepo;
         }
         public async Task<IActionResult> Index()
         {
             var products=await productRepo.GetAllAsync();
             return View(products);
         }
-        public IActionResult Add()
+        public async Task<IActionResult> Add()
         {
-            ViewBag.categories = _context.Categories.ToList();
+            ViewBag.categories = await categoryRepo.GetAllAsync();
 
             return View();
         }
@@ -32,16 +33,16 @@ namespace ECommerce.Controllers
                 await productRepo.AddAsync(product);
                 return RedirectToAction("Index");
             }
-            ViewBag.categories = _context.Categories.ToList();
+            ViewBag.categories = await categoryRepo.GetAllAsync();
             return View(product);
         }
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return BadRequest();
             else if(id==0) return BadRequest();
-                var product = _context.Products.FirstOrDefault(p => p.ProductId == id);
+            var product =await productRepo.GetByIdAsync(id.Value);
             if(product == null) return NotFound();
-            ViewBag.categories = _context.Categories.ToList();
+            ViewBag.categories = await categoryRepo.GetAllAsync();
 
             return View(product);
         }
@@ -54,7 +55,7 @@ namespace ECommerce.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.categories = _context.Categories.ToList();
+            ViewBag.categories = await categoryRepo.GetAllAsync();
 
             return View(product);
         }

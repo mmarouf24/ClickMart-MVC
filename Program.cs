@@ -1,4 +1,6 @@
+using ECommerce.Models;
 using ECommerce.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce
 {
@@ -12,6 +14,10 @@ namespace ECommerce
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IUserRepo,UserRepo>();
             builder.Services.AddScoped<IProductRepo,ProductRepo>();
+            builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
+            builder.Services.AddDbContext<ECommerceDbContext>(
+                s => s.UseSqlServer(builder.Configuration.GetConnectionString("SqlDb"))
+                );
 
             var app = builder.Build();
 
