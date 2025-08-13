@@ -1,33 +1,25 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ECommerce.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ECommerce.Models
+namespace ECommerce.ViewModels
 {
-    public enum UserRole
+    public class RegisterViewModel
     {
-        User,
-        Admin
-    }
-    public class User
-    {
-        [Key]
-        public int UserId { get; set; }
-        [Required,StringLength(15,MinimumLength =3),Display(Name ="First Name")]
         public string FirstName { get; set; }
         [Required, StringLength(15, MinimumLength = 3), Display(Name = "Last Name")]
         public string LastName { get; set; }
-        [EmailAddress,Required]
-        [Remote("CheckEmailExistance","Users",ErrorMessage ="The Email is already Existed !")]
+        [EmailAddress, Required]
+        [Remote("CheckEmailExistance", "Users", ErrorMessage = "The Email is already Existed !")]
         public string Email { get; set; }
-        public UserRole Role { get; set; }=UserRole.User;
 
-        [Required,DataType(DataType.Password),MinLength(8)]
+        [Required, DataType(DataType.Password), MinLength(8)]
         public string Password { get; set; }
-        [DataType(DataType.Password),Compare("Password"),Display(Name ="Confirm Password"),NotMapped]
+        [DataType(DataType.Password), Compare("Password"), Display(Name = "Confirm Password"), NotMapped]
         public string ConfirmedPassword { get; set; }
-        [DataType(DataType.PhoneNumber),Required]
-        [RegularExpression(@"01[012][0-9]{8}",ErrorMessage ="Ex: 01234567890")]
+        [DataType(DataType.PhoneNumber), Required]
+        [RegularExpression(@"01[012][0-9]{8}", ErrorMessage = "Ex: 01234567890")]
         public string Phone { get; set; }
         [Required]
         public string Country { get; set; }
@@ -38,12 +30,5 @@ namespace ECommerce.Models
 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
-
-        public Cart Cart { get; set; }
-        public ICollection<Order> Orders { get; set; }
-
-
-
-
     }
 }

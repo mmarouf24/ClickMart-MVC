@@ -1,5 +1,6 @@
 using ECommerce.Models;
 using ECommerce.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce
@@ -18,6 +19,12 @@ namespace ECommerce
             builder.Services.AddDbContext<ECommerceDbContext>(
                 s => s.UseSqlServer(builder.Configuration.GetConnectionString("SqlDb"))
                 );
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(s =>
+                {
+                    s.LoginPath = "/Users/Login";
+                });
+
 
             var app = builder.Build();
 
@@ -29,7 +36,7 @@ namespace ECommerce
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

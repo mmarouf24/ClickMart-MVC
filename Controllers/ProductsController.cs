@@ -1,5 +1,6 @@
 ﻿using ECommerce.Models;
 using ECommerce.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,12 +21,15 @@ namespace ECommerce.Controllers
             var products=await productRepo.GetAllAsync();
             return View(products);
         }
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Add()
         {
             ViewBag.categories = await categoryRepo.GetAllAsync();
 
             return View();
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Add(Product product) {
             if (ModelState.IsValid)
@@ -36,6 +40,8 @@ namespace ECommerce.Controllers
             ViewBag.categories = await categoryRepo.GetAllAsync();
             return View(product);
         }
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return BadRequest();
@@ -47,6 +53,8 @@ namespace ECommerce.Controllers
             return View(product);
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Edit(int id, Product product) {
             if (ModelState.IsValid)
             {
@@ -59,6 +67,7 @@ namespace ECommerce.Controllers
 
             return View(product);
         }
+        [Authorize(Roles = "Admin")]
 
         public async Task<IActionResult> Delete(int? id) {
             if (id == null) return BadRequest();
@@ -68,6 +77,7 @@ namespace ECommerce.Controllers
            
             return RedirectToAction("Index");
         }
+
         public async Task<IActionResult> Details(int? id) {
             if (id == null) return BadRequest();
             else if (id == 0) return BadRequest();

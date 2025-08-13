@@ -1,4 +1,5 @@
 ﻿using ECommerce.Models;
+using ECommerce.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Repositories
@@ -7,6 +8,7 @@ namespace ECommerce.Repositories
     {
         Task<List<User>> GetAllAsync();
         Task<User> Register(User user);
+        Task<User> Login(LoginViewModel model);
 
     }
     public class UserRepo : IUserRepo
@@ -27,5 +29,11 @@ namespace ECommerce.Repositories
             await _context.SaveChangesAsync();
             return user;
         }
+        public async Task<User> Login(LoginViewModel model)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email && u.Password==model.Password);
+            return user;
+        }
+
     }
 }

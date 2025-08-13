@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ECommerce.Models;
 
 namespace ECommerce.Models
 {
